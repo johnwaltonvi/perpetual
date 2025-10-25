@@ -37,6 +37,7 @@ Documentation for the Python API can be found [here](https://perpetual-ml.github
 - Initialize Rayon’s wasm thread pool (e.g. via [`wasm_bindgen_rayon::init_thread_pool`](https://docs.rs/wasm-bindgen-rayon/latest/wasm_bindgen_rayon/fn.init_thread_pool.html)) in the host application before invoking Perpetual.
 - When no `memory_limit` is supplied in `BoosterConfig`, Perpetual assumes a 4&nbsp;GB budget on wasm targets; provide an explicit limit if your runtime exposes a tighter bound.
 - Native targets continue to detect available memory automatically when `memory_limit` is unset.
+- For local wasm builds/tests, set `RUSTFLAGS='-C target-feature=+atomics,+bulk-memory --cfg getrandom_backend=\"wasm_js\"'` so `wasm-bindgen-rayon` and `getrandom` see the required target capabilities.
 
 
 ## Benchmark
