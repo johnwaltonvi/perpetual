@@ -111,7 +111,10 @@ mod tests {
             .map(|node_hist| NodeHistogram::from_owned(node_hist))
             .collect();
 
-        let pool = rayon::ThreadPoolBuilder::new().num_threads(2).build().unwrap();
+        let pool = crate::runtime::parallel::ThreadPoolBuilder::new()
+            .num_threads(2)
+            .build()
+            .unwrap();
 
         let mut split_info_vec: Vec<SplitInfo> = (0..col_index.len()).map(|_| SplitInfo::default()).collect();
         let mut split_info_slice = SplitInfoSlice::new(&mut split_info_vec);

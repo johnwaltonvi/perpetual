@@ -32,6 +32,12 @@ model.fit(X, y)
 
 Documentation for the Python API can be found [here](https://perpetual-ml.github.io/perpetual) and for the Rust API [here](https://docs.rs/perpetual/latest/perpetual/).
 
+## WebAssembly usage
+
+- Initialize Rayon’s wasm thread pool (e.g. via [`wasm_bindgen_rayon::init_thread_pool`](https://docs.rs/wasm-bindgen-rayon/latest/wasm_bindgen_rayon/fn.init_thread_pool.html)) in the host application before invoking Perpetual.
+- When no `memory_limit` is supplied in `BoosterConfig`, Perpetual assumes a 4&nbsp;GB budget on wasm targets; provide an explicit limit if your runtime exposes a tighter bound.
+- Native targets continue to detect available memory automatically when `memory_limit` is unset.
+
 
 ## Benchmark
 

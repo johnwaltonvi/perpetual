@@ -18,6 +18,7 @@ pub mod grower;
 pub mod histogram;
 pub mod metrics;
 pub mod objective_functions;
+pub mod runtime;
 pub mod prune;
 pub mod sampler;
 pub mod splitter;

@@ -7,7 +7,7 @@ use crate::objective_functions::Objective;
 use crate::partial_dependence::tree_partial_dependence;
 use crate::splitter::{SplitInfoSlice, Splitter};
 use crate::utils::{fast_f64_sum, gain, gain_const_hess, weight, weight_const_hess};
-use rayon::ThreadPool;
+use crate::runtime::parallel::ThreadPool;
 use serde::{Deserialize, Serialize};
 use std::cmp::max;
 use std::collections::{BinaryHeap, HashMap, HashSet};
@@ -413,7 +413,10 @@ mod tests {
             .map(|node_hist| NodeHistogram::from_owned(node_hist))
             .collect();
 
-        let pool = rayon::ThreadPoolBuilder::new().num_threads(2).build().unwrap();
+        let pool = crate::runtime::parallel::ThreadPoolBuilder::new()
+            .num_threads(2)
+            .build()
+            .unwrap();
 
         let mut split_info_vec: Vec<SplitInfo> = (0..col_index.len()).map(|_| SplitInfo::default()).collect();
         let mut split_info_slice = SplitInfoSlice::new(&mut split_info_vec);
@@ -515,7 +518,10 @@ mod tests {
             .map(|node_hist| NodeHistogram::from_owned(node_hist))
             .collect();
 
-        let pool = rayon::ThreadPoolBuilder::new().num_threads(2).build().unwrap();
+        let pool = crate::runtime::parallel::ThreadPoolBuilder::new()
+            .num_threads(2)
+            .build()
+            .unwrap();
 
         let mut split_info_vec: Vec<SplitInfo> = (0..col_index.len()).map(|_| SplitInfo::default()).collect();
         let mut split_info_slice = SplitInfoSlice::new(&mut split_info_vec);
@@ -612,7 +618,10 @@ mod tests {
             .map(|node_hist| NodeHistogram::from_owned(node_hist))
             .collect();
 
-        let pool = rayon::ThreadPoolBuilder::new().num_threads(2).build().unwrap();
+        let pool = crate::runtime::parallel::ThreadPoolBuilder::new()
+            .num_threads(2)
+            .build()
+            .unwrap();
 
         let mut split_info_vec: Vec<SplitInfo> = (0..col_index.len()).map(|_| SplitInfo::default()).collect();
         let mut split_info_slice = SplitInfoSlice::new(&mut split_info_vec);
@@ -719,7 +728,10 @@ mod tests {
             .map(|node_hist| NodeHistogram::from_owned(node_hist))
             .collect();
 
-        let pool = rayon::ThreadPoolBuilder::new().num_threads(2).build().unwrap();
+        let pool = crate::runtime::parallel::ThreadPoolBuilder::new()
+            .num_threads(2)
+            .build()
+            .unwrap();
 
         let mut split_info_vec: Vec<SplitInfo> = (0..col_index.len()).map(|_| SplitInfo::default()).collect();
         let mut split_info_slice = SplitInfoSlice::new(&mut split_info_vec);

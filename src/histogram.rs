@@ -1,7 +1,8 @@
 use crate::bin::Bin;
 use crate::data::{FloatData, JaggedMatrix};
 use crate::Matrix;
-use rayon::{prelude::*, ThreadPool};
+use crate::runtime::parallel::ThreadPool;
+use rayon::prelude::*;
 use std::cell::UnsafeCell;
 
 #[derive(Debug)]
@@ -490,7 +491,10 @@ mod tests {
 
         let col = 0;
 
-        let pool = rayon::ThreadPoolBuilder::new().num_threads(2).build().unwrap();
+        let pool = crate::runtime::parallel::ThreadPoolBuilder::new()
+            .num_threads(2)
+            .build()
+            .unwrap();
 
         update_histogram(
             &mut hist_init,
@@ -552,8 +556,14 @@ mod tests {
 
         let col = 1;
 
-        let pool1 = rayon::ThreadPoolBuilder::new().num_threads(1).build().unwrap();
-        let pool2 = rayon::ThreadPoolBuilder::new().num_threads(2).build().unwrap();
+        let pool1 = crate::runtime::parallel::ThreadPoolBuilder::new()
+            .num_threads(1)
+            .build()
+            .unwrap();
+        let pool2 = crate::runtime::parallel::ThreadPoolBuilder::new()
+            .num_threads(2)
+            .build()
+            .unwrap();
 
         update_histogram(
             &mut hist_init1,

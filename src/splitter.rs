@@ -11,7 +11,7 @@ use crate::utils::{
     gain_given_weight_const_hess, pivot_on_split, pivot_on_split_const_hess, pivot_on_split_exclude_missing,
     pivot_on_split_exclude_missing_const_hess,
 };
-use rayon::ThreadPool;
+use crate::runtime::parallel::ThreadPool;
 use std::borrow::BorrowMut;
 use std::cell::UnsafeCell;
 use std::collections::{HashMap, HashSet};
@@ -1881,7 +1881,7 @@ mod tests {
         let index = data.index.to_owned();
         let col_index: Vec<usize> = (0..data.cols).collect();
 
-        let pool = rayon::ThreadPoolBuilder::new()
+        let pool = crate::runtime::parallel::ThreadPoolBuilder::new()
             .num_threads(num_threads)
             .build()
             .unwrap();
@@ -2029,7 +2029,10 @@ mod tests {
         let index = data.index.to_owned();
         let col_index: Vec<usize> = (0..data.cols).collect();
 
-        let pool = rayon::ThreadPoolBuilder::new().num_threads(2).build().unwrap();
+        let pool = crate::runtime::parallel::ThreadPoolBuilder::new()
+            .num_threads(2)
+            .build()
+            .unwrap();
 
         let n_nodes_alloc = 100;
 
@@ -2121,7 +2124,10 @@ mod tests {
         let index = data.index.to_owned();
         let col_index: Vec<usize> = (0..data.cols).collect();
 
-        let pool = rayon::ThreadPoolBuilder::new().num_threads(2).build().unwrap();
+        let pool = crate::runtime::parallel::ThreadPoolBuilder::new()
+            .num_threads(2)
+            .build()
+            .unwrap();
 
         let mut hist_tree_owned: Vec<NodeHistogramOwned> = (0..10)
             .map(|_| NodeHistogramOwned::empty_from_cuts(&b.cuts, &col_index, is_const_hess, true))
@@ -2226,7 +2232,10 @@ mod tests {
         let index = data.index.to_owned();
         let col_index: Vec<usize> = (0..data.cols).collect();
 
-        let pool = rayon::ThreadPoolBuilder::new().num_threads(2).build().unwrap();
+        let pool = crate::runtime::parallel::ThreadPoolBuilder::new()
+            .num_threads(2)
+            .build()
+            .unwrap();
 
         let mut hist_tree_owned: Vec<NodeHistogramOwned> = (0..10)
             .map(|_| NodeHistogramOwned::empty_from_cuts(&b.cuts, &col_index, is_const_hess, true))

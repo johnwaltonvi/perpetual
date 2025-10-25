@@ -22,8 +22,6 @@ use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 use std::mem;
 use std::time::Instant;
-use sysinfo::System;
-
 type ImportanceFn = fn(&Tree, &mut HashMap<usize, (f32, usize)>);
 
 /// Perpetual Booster object
@@ -213,7 +211,7 @@ impl PerpetualBooster {
             Some(num_threads) => num_threads,
             None => n_threads_available,
         };
-        let pool = rayon::ThreadPoolBuilder::new()
+        let pool = crate::runtime::parallel::ThreadPoolBuilder::new()
             .num_threads(num_threads)
             .build()
             .unwrap();
@@ -281,21 +279,14 @@ impl PerpetualBooster {
         } else {
             mem_bin * self.cfg.max_bin as usize * col_amount
         };
-        let sys = System::new_all();
-        let mem_available = match self.cfg.memory_limit {
-            Some(mem_limit) => mem_limit * 1e9_f32,
-            None => match sys.cgroup_limits() {
-                Some(limits) => limits.free_memory as f32,
-                None => sys.available_memory() as f32,
-            },
-        };
+        let memory_budget =
+            crate::runtime::memory::resolve_memory_budget(self.cfg.memory_limit);
+        let mem_available = memory_budget.bytes;
 
-        let mut n_nodes_alloc: usize;
-        if self.cfg.memory_limit.is_none() {
-            n_nodes_alloc = (FREE_MEM_ALLOC_FACTOR * (mem_available / (mem_hist as f32))) as usize;
+        let mut n_nodes_alloc =
+            (FREE_MEM_ALLOC_FACTOR * (mem_available / (mem_hist as f32))) as usize;
+        if !memory_budget.from_config {
             n_nodes_alloc = n_nodes_alloc.clamp(N_NODES_ALLOC_MIN, N_NODES_ALLOC_MAX);
-        } else {
-            n_nodes_alloc = (FREE_MEM_ALLOC_FACTOR * (mem_available / (mem_hist as f32))) as usize;
         }
 
         let mut hist_tree_owned: Vec<NodeHistogramOwned>;
